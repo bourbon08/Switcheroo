@@ -42,6 +42,7 @@ using Switcheroo.Properties;
 using Application = System.Windows.Application;
 using MenuItem = System.Windows.Forms.MenuItem;
 using MessageBox = System.Windows.MessageBox;
+using System.Windows.Media;
 
 namespace Switcheroo
 {
@@ -68,6 +69,10 @@ namespace Switcheroo
         private bool _altTabAutoSwitch;
         private bool _sortWinList = false;
 
+        private string processFilterText = "";
+        List<string> processList = new List<String> { "chrome", "code","idea", "explorer" };
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -87,7 +92,63 @@ namespace Switcheroo
             Theme.LoadTheme();
 
             Opacity = 0;
+
+            SetUpProcessFilter();
         }
+        #region process filter
+
+        //qxx 初始化process过滤器
+        private void SetUpProcessFilter()
+        {
+            var n = 0;
+            foreach (var process in processList)
+            {
+                n++;
+                var tb = new TextBlock()
+                {
+                    Text = n + "." + process,
+                    FontSize = 17,
+                    Tag = process
+                };
+                tb.Foreground = Brushes.Black;
+                tb.Margin = new Thickness(2, 0, 2, 0);
+                tb.MouseDown += TbProcessFilter_MouseDown;
+                spProcessFilter.Children.Add(tb);
+            }
+        }
+
+        private void TbProcessFilter_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var tb = sender as TextBlock;
+            var process = tb.Tag as String;
+            //重置颜色
+            foreach (var item in spProcessFilter.Children)
+            {
+                (item as TextBlock).Foreground = Brushes.Black;
+            }
+
+            if (this.processFilterText == process)
+            {
+                this.processFilterText = "";
+            }
+            else
+            {
+                this.processFilterText = process;
+                tb.Foreground = Brushes.Red;
+
+            }
+            TextChanged(null, null);
+         }
+        void switchProcessFilter(int index)
+        {
+            if(index >= spProcessFilter.Children.Count)
+            {
+                return;
+            }
+             var  tb = spProcessFilter.Children[index] as TextBlock;
+            TbProcessFilter_MouseDown(tb, null);
+        }
+        #endregion
 
         /// =================================
 
@@ -106,6 +167,8 @@ namespace Switcheroo
                 // Opacity is set to 0 right away so it appears that action has been taken right away...
                 if (args.Key == Key.Enter && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
                 {
+                    //qxx 为了兼容输入法里的回车; 
+                    Switch();
                     Opacity = 0;
                 }
                 else if (args.Key == Key.Escape)
@@ -142,23 +205,29 @@ namespace Switcheroo
                 }
                 else if (args.SystemKey == Key.D1 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    SwitchToIndex(0);
+                    //SwitchToIndex(0);
+                    switchProcessFilter(0);
                 }
                 else if (args.SystemKey == Key.D2 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    SwitchToIndex(1);
+                    //SwitchToIndex(1);
+                    switchProcessFilter(1);
                 }
                 else if (args.SystemKey == Key.D3 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    SwitchToIndex(2);
+                    //SwitchToIndex(2);
+                    switchProcessFilter(2);
                 }
                 else if (args.SystemKey == Key.D4 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    SwitchToIndex(3);
+                    //SwitchToIndex(3);
+                    switchProcessFilter(3);
                 }
                 else if (args.SystemKey == Key.D5 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    SwitchToIndex(4);
+                    //SwitchToIndex(4);
+                    switchProcessFilter(4);
+
                 }
                 else if (args.SystemKey == Key.D6 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
@@ -187,7 +256,7 @@ namespace Switcheroo
                 // ... But only when the keys are release, the action is actually executed
                 if (args.Key == Key.Enter && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
                 {
-                    Switch();
+                    //Switch();
                 }
                 else if (args.Key == Key.Escape)
                 {
@@ -720,6 +789,7 @@ namespace Switcheroo
             }
         }
 
+        //
         private void TextChanged(object sender, TextChangedEventArgs args)
         {
             if (!tb.IsEnabled)
@@ -728,6 +798,11 @@ namespace Switcheroo
             }
 
             var query = tb.Text;
+
+            if (!query.Contains(".") && this.processFilterText != "")
+            {
+                query = this.processFilterText + "." + query;
+            }
 
             var context = new WindowFilterContext<AppWindowViewModel>
             {

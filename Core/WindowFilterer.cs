@@ -35,14 +35,15 @@ namespace Switcheroo.Core
 
             if (queryParts.Length == 2)
             {
-                processFilterText = queryParts[0];
+                processFilterText = queryParts[0].Trim();
                 if (processFilterText.Length == 0)
                 {
-                    processFilterText = context.ForegroundWindowProcessTitle;
+                    processFilterText = context.ForegroundWindowProcessTitle.Trim();
                 }
 
-                filterText = queryParts[1];
+                filterText = queryParts[1].Trim();
             }
+            
 
             return context.Windows
                 .Select(
