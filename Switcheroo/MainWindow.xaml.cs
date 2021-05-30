@@ -100,6 +100,11 @@ namespace Switcheroo
         //qxx 初始化process过滤器
         private void SetUpProcessFilter()
         {
+            String filters = Properties.Settings.Default.ProcessFilters;
+            if (!String.IsNullOrEmpty(filters))
+            {
+                processList = filters.Split(',').ToList();
+            }
             var n = 0;
             foreach (var process in processList)
             {
@@ -117,6 +122,9 @@ namespace Switcheroo
             }
         }
 
+        /**
+         * 单击时切换程序过滤; 
+         */
         private void TbProcessFilter_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var tb = sender as TextBlock;
@@ -127,7 +135,7 @@ namespace Switcheroo
                 (item as TextBlock).Foreground = Brushes.Black;
             }
 
-            if (this.processFilterText == process)
+            if (this.processFilterText == process || String.IsNullOrEmpty(process))
             {
                 this.processFilterText = "";
             }
@@ -139,13 +147,23 @@ namespace Switcheroo
             }
             TextChanged(null, null);
          }
+
+        /**
+         * 切换对应index的程序, 从0开始; 
+         * 如果index小于0, 清除过滤; 
+         */
         void switchProcessFilter(int index)
         {
             if(index >= spProcessFilter.Children.Count)
             {
                 return;
             }
-             var  tb = spProcessFilter.Children[index] as TextBlock;
+            if(index < 0)
+            {
+                TbProcessFilter_MouseDown(new TextBlock(), null);
+                return;
+            }
+            var  tb = spProcessFilter.Children[index] as TextBlock;
             TbProcessFilter_MouseDown(tb, null);
         }
         #endregion
@@ -469,6 +487,8 @@ namespace Switcheroo
         private void LoadData(InitialFocus focus)
         {
             _unfilteredWindowList = new WindowFinder().GetWindows().Select(window => new AppWindowViewModel(window)).ToList();
+            //qxx
+            switchProcessFilter(-1);
 
             var firstWindow = _unfilteredWindowList.FirstOrDefault();
 

@@ -12,7 +12,7 @@ namespace Switcheroo.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -142,22 +142,29 @@ namespace Switcheroo.Properties {
                 this["EnableHotKey"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Light")]
-        public string Theme
-        {
-            set
-            {
-                this["Theme"] = value;
-                Switcheroo.Theme.LoadTheme(); 
-            }
-            get
-            {
+        public string Theme {
+            get {
                 return ((string)(this["Theme"]));
             }
-
+            set {
+                this["Theme"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("chrome,code,idea,explorer2")]
+        public string ProcessFilters {
+            get {
+                return ((string)(this["ProcessFilters"]));
+            }
+            set {
+                this["ProcessFilters"] = value;
+            }
         }
     }
 }
