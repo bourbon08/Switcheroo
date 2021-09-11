@@ -1,3 +1,5 @@
+# [改动记录](./myreadme.md)
+
 <img src="logo.png" alt="Switcheroo" width="48px" height="48px"> Switcheroo + mods
 ==========
 
