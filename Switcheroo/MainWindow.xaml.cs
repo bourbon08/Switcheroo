@@ -70,7 +70,7 @@ namespace Switcheroo
         private bool _sortWinList = false;
 
         private string processFilterText = "";
-        List<string> processList = new List<String> { "chrome", "code","idea", "explorer" };
+        List<string> processList = new List<String> { "数学", "code","idea", "explorer" };
 
 
         public MainWindow()
@@ -149,6 +149,7 @@ namespace Switcheroo
          }
 
         /**
+         * 调整到 index 个过滤器 
          * 切换对应index的程序, 从0开始; 
          * 如果index小于0, 清除过滤; 
          */
@@ -223,28 +224,29 @@ namespace Switcheroo
                 }
                 else if (args.SystemKey == Key.D1 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    //SwitchToIndex(0);
-                    switchProcessFilter(0);
+                    SwitchToIndex(0);
+                    // 跳转到
+                    //switchProcessFilter(0);
                 }
                 else if (args.SystemKey == Key.D2 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    //SwitchToIndex(1);
-                    switchProcessFilter(1);
+                    SwitchToIndex(1);
+                    //switchProcessFilter(1);
                 }
                 else if (args.SystemKey == Key.D3 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    //SwitchToIndex(2);
-                    switchProcessFilter(2);
+                    SwitchToIndex(2);
+                    //switchProcessFilter(2);
                 }
                 else if (args.SystemKey == Key.D4 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    //SwitchToIndex(3);
-                    switchProcessFilter(3);
+                    SwitchToIndex(3);
+                    //switchProcessFilter(3);
                 }
                 else if (args.SystemKey == Key.D5 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    //SwitchToIndex(4);
-                    switchProcessFilter(4);
+                    SwitchToIndex(4);
+                    //switchProcessFilter(4);
 
                 }
                 else if (args.SystemKey == Key.D6 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
