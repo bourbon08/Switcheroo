@@ -823,7 +823,17 @@ namespace Switcheroo
 
             if (!query.Contains(".") && this.processFilterText != "")
             {
-                query = this.processFilterText + "." + query;
+                if(this.processFilterText == "math")
+                {
+                    query = "bookxnote" + "." + query;
+                } else if (this.processFilterText == "前端")
+                {
+                    query = "code" + "." + "webstorm" + "." + query;
+                } else
+                {
+                    query = this.processFilterText + "." + query;
+                }
+                
             }
 
             var context = new WindowFilterContext<AppWindowViewModel>

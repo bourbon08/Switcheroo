@@ -35,6 +35,7 @@ namespace Switcheroo.Core
 
             if (queryParts.Length == 2)
             {
+                // todo 除了最后一个
                 processFilterText = queryParts[0].Trim();
                 if (processFilterText.Length == 0)
                 {
@@ -48,18 +49,23 @@ namespace Switcheroo.Core
             return context.Windows
                 .Select(
                     w =>
-                        new
+                    {
+                        return new
                         {
                             Window = w,
                             ResultsTitle = Score(w.WindowTitle, filterText),
                             ResultsProcessTitle = Score(w.ProcessTitle, processFilterText ?? filterText)
-                        })
+                        };
+                    })
+                        
                 .Where(r =>
                 {
                     if (processFilterText == null)
                     {
                         return r.ResultsTitle.Any(wt => wt.Matched) || r.ResultsProcessTitle.Any(pt => pt.Matched);
                     }
+                    // todo note && ; 下面能输出吗
+                    System.Console.WriteLine(r.ResultsProcessTitle);
                     return r.ResultsTitle.Any(wt => wt.Matched) && r.ResultsProcessTitle.Any(pt => pt.Matched);
                 })
                 .OrderByDescending(r => r.ResultsTitle.Sum(wt => wt.Score) + r.ResultsProcessTitle.Sum(pt => pt.Score))
