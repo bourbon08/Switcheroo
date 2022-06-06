@@ -823,10 +823,11 @@ namespace Switcheroo
 
             if (!query.Contains(".") && this.processFilterText != "")
             {
-                if(this.processFilterText == "math")
+                // 前两个暂时废弃
+                if(this.processFilterText == "math21312")
                 {
                     query = "bookxnote" + "." + query;
-                } else if (this.processFilterText == "前端")
+                } else if (this.processFilterText == "前端123123")
                 {
                     query = "code" + "." + "webstorm" + "." + query;
                 } else
@@ -842,7 +843,53 @@ namespace Switcheroo
                 ForegroundWindowProcessTitle = new AppWindow(_foregroundWindow.HWnd).ProcessTitle
             };
 
-            var filterResults = new WindowFilterer().Filter(context, query).ToList();
+            var filterResults = new WindowFilterer().Filter(context, "123123123123").ToList();
+
+            // todo 配置放出
+            if (this.processFilterText == "dev")
+            {
+                List<string> apps =  new List<string> { "code", "webstorm", "visual", "github desktop", "terminal" };
+
+                foreach (string appName in apps)
+                {
+                    var temp = new WindowFilterer().Filter(context, appName).ToList();
+                    foreach (var temp1 in temp)
+                    {
+                        filterResults.Add(temp1);
+                    }
+                }
+            }
+            else if (this.processFilterText == "browser")
+            {
+                List<string> apps = new List<string> { "edge", "chrome"};
+
+                foreach (string appName in apps)
+                {
+                    var temp = new WindowFilterer().Filter(context, appName).ToList();
+                    foreach (var temp1 in temp)
+                    {
+                        filterResults.Add(temp1);
+                    }
+                }
+            }
+            else if (this.processFilterText == "fun")
+            {
+                List<string> apps = new List<string> { "网易云" };
+
+                foreach (string appName in apps)
+                {
+                    var temp = new WindowFilterer().Filter(context, appName).ToList();
+                    foreach (var temp1 in temp)
+                    {
+                        filterResults.Add(temp1);
+                    }
+                }
+            }
+            else
+            {
+                filterResults = new WindowFilterer().Filter(context, query).ToList();
+            }
+
 
             foreach (var filterResult in filterResults)
             {

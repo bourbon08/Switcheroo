@@ -31,22 +31,30 @@ namespace Switcheroo.Core
             var filterText = query;
             string processFilterText = null;
 
-            var queryParts = query.Split(new [] {'.'}, 2);
+            var queryParts = query.Split(new[] { '.' }, 2);
 
+            //foreach (var part in queryParts)
+            //{
+            //    System.Console.WriteLine(part);
+            //}
+
+
+            // 长度为1时， processFilterText为null
             if (queryParts.Length == 2)
             {
                 // todo 除了最后一个
                 processFilterText = queryParts[0].Trim();
                 if (processFilterText.Length == 0)
                 {
+                    // 过滤
                     processFilterText = context.ForegroundWindowProcessTitle.Trim();
                 }
 
+                // 输入框字符
                 filterText = queryParts[1].Trim();
             }
-            
 
-            return context.Windows
+            var step1 = context.Windows
                 .Select(
                     w =>
                     {
@@ -54,29 +62,30 @@ namespace Switcheroo.Core
                         {
                             Window = w,
                             ResultsTitle = Score(w.WindowTitle, filterText),
-                            ResultsProcessTitle = Score(w.ProcessTitle, processFilterText ?? filterText)
+                            ResultsProcessTitle = Score(w.ProcessTitle, filterText)
                         };
-                    })
-                        
-                .Where(r =>
+                    });
+
+            return step1.Where(r =>
+            {
+                if (processFilterText == null)
                 {
-                    if (processFilterText == null)
-                    {
-                        return r.ResultsTitle.Any(wt => wt.Matched) || r.ResultsProcessTitle.Any(pt => pt.Matched);
-                    }
-                    // todo note && ; 下面能输出吗
-                    System.Console.WriteLine(r.ResultsProcessTitle);
+                    return r.ResultsTitle.Any(wt => wt.Matched) || r.ResultsProcessTitle.Any(pt => pt.Matched);
+                }
+                else
+                {
                     return r.ResultsTitle.Any(wt => wt.Matched) && r.ResultsProcessTitle.Any(pt => pt.Matched);
-                })
-                .OrderByDescending(r => r.ResultsTitle.Sum(wt => wt.Score) + r.ResultsProcessTitle.Sum(pt => pt.Score))
-                .Select(
-                    r =>
-                        new FilterResult<T>
-                        {
-                            AppWindow = r.Window,
-                            WindowTitleMatchResults = r.ResultsTitle,
-                            ProcessTitleMatchResults = r.ResultsProcessTitle
-                        });
+                }
+            })
+            .OrderByDescending(r => r.ResultsTitle.Sum(wt => wt.Score) + r.ResultsProcessTitle.Sum(pt => pt.Score))
+            .Select(
+                r =>
+                    new FilterResult<T>
+                    {
+                        AppWindow = r.Window,
+                        WindowTitleMatchResults = r.ResultsTitle,
+                        ProcessTitleMatchResults = r.ResultsProcessTitle
+                    });
         }
 
         private static List<MatchResult> Score(string title, string filterText)
@@ -101,6 +110,6 @@ namespace Switcheroo.Core
     public class WindowFilterContext<T> where T : IWindowText
     {
         public string ForegroundWindowProcessTitle { get; set; }
-        public IEnumerable<T> Windows { get; set; } 
+        public IEnumerable<T> Windows { get; set; }
     }
 }
