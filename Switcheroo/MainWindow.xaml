@@ -81,7 +81,7 @@
             </DockPanel>
             <!--程序分组信息-->
             <DockPanel Margin="4,0,4,0" Name="ProcessPanel" Background="Transparent" Height="20" DockPanel.Dock="Top">
-                <TextBlock FontSize="17" DockPanel.Dock="Left">
+                <TextBlock FontSize="30" DockPanel.Dock="Left">
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" Name="spProcessFilter" DockPanel.Dock="Left" HorizontalAlignment="Left">
                 </StackPanel>
@@ -204,7 +204,7 @@
                                     </Image.Source>
                                 </Image>
                                 <TextBlock local:FormattedTextAttribute.FormattedText="{Binding Path=FormattedTitle}"
-                                           Grid.Row="0" Grid.Column="1" Margin="3,0">
+                                           Grid.Row="0" Grid.Column="1" Margin="3,0" FontSize="32">
                                 </TextBlock>
                                 <TextBlock
                                     local:FormattedTextAttribute.FormattedText="{Binding Path=FormattedProcessTitle}"

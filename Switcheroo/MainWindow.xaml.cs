@@ -819,6 +819,11 @@ namespace Switcheroo
                 return;
             }
 
+            if( this.processFilterText == "" && tb.Text == "")
+            {
+                this.processFilterText = "dev";
+            }
+
             var query = tb.Text;
 
             if (!query.Contains(".") && this.processFilterText != "")
