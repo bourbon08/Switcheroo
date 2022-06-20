@@ -70,7 +70,7 @@ namespace Switcheroo
         private bool _sortWinList = false;
 
         private string processFilterText = "";
-        List<string> processList = new List<String> { "数学", "code","idea", "explorer" };
+        List<string> processList = new List<String> { "数学1", "code","idea", "explorer" };
 
 
         public MainWindow()

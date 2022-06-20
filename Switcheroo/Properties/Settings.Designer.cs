@@ -157,7 +157,7 @@ namespace Switcheroo.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("chrome,code,idea,explorer2")]
+        [global::System.Configuration.DefaultSettingValueAttribute("dev,browser,fun")]
         public string ProcessFilters {
             get {
                 return ((string)(this["ProcessFilters"]));

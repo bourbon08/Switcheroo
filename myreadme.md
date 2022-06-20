@@ -24,4 +24,6 @@ if (this.processFilterText == "dev")
 
 默认配置写死: dev  browser  fun
 
+![image-20220620113624340](assets/image-20220620113624340.png)
+
 配置文件: [switcheroo.settings](.\Switcheroo\bin\Debug)
