@@ -203,8 +203,9 @@
                                         </PriorityBinding>
                                     </Image.Source>
                                 </Image>
+                                <!--  主体 字体 -->
                                 <TextBlock local:FormattedTextAttribute.FormattedText="{Binding Path=FormattedTitle}"
-                                           Grid.Row="0" Grid.Column="1" Margin="3,0" FontSize="32">
+                                           Grid.Row="0" Grid.Column="1" Margin="3,0" FontSize="28">
                                 </TextBlock>
                                 <TextBlock
                                     local:FormattedTextAttribute.FormattedText="{Binding Path=FormattedProcessTitle}"
