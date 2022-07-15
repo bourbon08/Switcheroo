@@ -230,18 +230,18 @@ namespace Switcheroo
                 }
                 else if (args.SystemKey == Key.D2 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    SwitchToIndex(1);
-                    //switchProcessFilter(1);
+                    //SwitchToIndex(1);
+                    switchProcessFilter(0);
                 }
                 else if (args.SystemKey == Key.D3 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    SwitchToIndex(2);
-                    //switchProcessFilter(2);
+                    //SwitchToIndex(2);
+                    switchProcessFilter(1);
                 }
                 else if (args.SystemKey == Key.D4 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    SwitchToIndex(3);
-                    //switchProcessFilter(3);
+                    //SwitchToIndex(3);
+                    switchProcessFilter(2);
                 }
                 else if (args.SystemKey == Key.D5 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
@@ -490,6 +490,7 @@ namespace Switcheroo
         {
             _unfilteredWindowList = new WindowFinder().GetWindows().Select(window => new AppWindowViewModel(window)).ToList();
             //qxx
+            // 调整到 index 个过滤器, 如果index小于0, 清除过滤;
             switchProcessFilter(-1);
 
             var firstWindow = _unfilteredWindowList.FirstOrDefault();
@@ -1149,6 +1150,11 @@ namespace Switcheroo
                 }
             }
         }
-        
+
+        private void Grid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // todo 与单击切换应用矛盾; 看 e 能不能区分但双击时间;
+            DragMove();
+        }
     }
 }
