@@ -221,31 +221,32 @@ namespace Switcheroo
                 {
                     NextItem();
                 }
+                else if (args.SystemKey == Key.Q && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
+                {
+                    // ctrl + 1 切换过滤器
+                    // switchProcessFilter(0);
+                    SwitchToIndexFilter(0);
+                }
                 else if (args.SystemKey == Key.D1 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    //SwitchToIndex(0);
-                    switchProcessFilter(0);
+                    // alt + 1 触发的
+                    SwitchToIndex(0);
                 }
                 else if (args.SystemKey == Key.D2 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    //SwitchToIndex(1);
-                    switchProcessFilter(1);
+                    SwitchToIndex(1);
                 }
                 else if (args.SystemKey == Key.D3 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    //SwitchToIndex(2);
-                    switchProcessFilter(2);
+                    SwitchToIndex(2);
                 }
                 else if (args.SystemKey == Key.D4 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    //SwitchToIndex(3);
-                    switchProcessFilter(3);
+                    SwitchToIndex(3);
                 }
                 else if (args.SystemKey == Key.D5 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
-                    //SwitchToIndex(4);
-                    switchProcessFilter(4);
-
+                    SwitchToIndex(4);
                 }
                 else if (args.SystemKey == Key.D6 && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt))
                 {
@@ -292,6 +293,17 @@ namespace Switcheroo
         }
 
         private void SwitchToIndex(int i)
+        {
+            if (i < lb.Items.Count)
+            {
+                lb.SelectedIndex = i;
+                ScrollSelectedItemIntoView();
+                Switch();
+                HideWindow();
+            }
+        }
+        
+        private void SwitchToIndexFilter(int i)
         {
             if (i < lb.Items.Count)
             {
@@ -830,7 +842,52 @@ namespace Switcheroo
                 ForegroundWindowProcessTitle = new AppWindow(_foregroundWindow.HWnd).ProcessTitle
             };
 
-            var filterResults = new WindowFilterer().Filter(context, query).ToList();
+            var filterResults = new WindowFilterer().Filter(context, "423141234").ToList();
+            
+            if (this.processFilterText == "dev")
+            {
+                List<string> apps =  new List<string> { "code", "webstorm", "visual", "github desktop", "terminal" };
+
+                foreach (string appName in apps)
+                {
+                    var temp = new WindowFilterer().Filter(context, appName).ToList();
+                    foreach (var temp1 in temp)
+                    {
+                        filterResults.Add(temp1);
+                    }
+                }
+            }
+            else if (this.processFilterText == "browser")
+            {
+                List<string> apps = new List<string> { "edge", "chrome"};
+
+                foreach (string appName in apps)
+                {
+                    var temp = new WindowFilterer().Filter(context, appName).ToList();
+                    foreach (var temp1 in temp)
+                    {
+                        filterResults.Add(temp1);
+                    }
+                }
+            }
+            else if (this.processFilterText == "fun")
+            {
+                List<string> apps = new List<string> { "cloudmusic" };
+
+                foreach (string appName in apps)
+                {
+                    var temp = new WindowFilterer().Filter(context, appName).ToList();
+                    foreach (var temp1 in temp)
+                    {
+                        filterResults.Add(temp1);
+                    }
+                }
+            }
+            else
+            {
+                // 查所有的
+                filterResults = new WindowFilterer().Filter(context, query).ToList();
+            }
 
             foreach (var filterResult in filterResults)
             {
