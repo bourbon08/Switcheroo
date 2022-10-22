@@ -93,6 +93,7 @@ namespace Switcheroo
 
             Opacity = 0;
 
+            // 初始化过滤器
             SetUpProcessFilter();
         }
         #region process filter
@@ -898,6 +899,7 @@ namespace Switcheroo
             }
 
             _filteredWindowList = new ObservableCollection<AppWindowViewModel>(filterResults.Select(r => r.AppWindow));
+            // 更新 程序列表
             lb.DataContext = _filteredWindowList;
             if (lb.Items.Count > 0)
             {
