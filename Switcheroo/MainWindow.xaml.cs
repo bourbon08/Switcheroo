@@ -51,6 +51,7 @@ namespace Switcheroo
         private WindowCloser _windowCloser;
         private List<AppWindowViewModel> _unfilteredWindowList;
         private ObservableCollection<AppWindowViewModel> _filteredWindowList;
+        private ObservableCollection<AppWindowViewModel> _filteredWindowList2;
         private NotifyIcon _notifyIcon;
         private HotKey _hotkey;
 
@@ -604,6 +605,12 @@ namespace Switcheroo
                 var win = (AppWindowViewModel)item;
                 win.AppWindow.SwitchToLastVisibleActivePopup();
             }
+            
+            // foreach (var item in lbdev.SelectedItems)
+            // {
+            //     var win = (AppWindowViewModel)item;
+            //     // win.AppWindow.SwitchToLastVisibleActivePopup();
+            // }
 
             HideWindow();
         }
@@ -844,6 +851,7 @@ namespace Switcheroo
             };
 
             var filterResults = new WindowFilterer().Filter(context, "423141234").ToList();
+            UpdateDevPrograms(context);
             
             if (this.processFilterText == "dev")
             {
@@ -851,6 +859,7 @@ namespace Switcheroo
 
                 foreach (string appName in apps)
                 {
+                    // Todo 性能待优化
                     var temp = new WindowFilterer().Filter(context, appName).ToList();
                     foreach (var temp1 in temp)
                     {
@@ -901,9 +910,42 @@ namespace Switcheroo
             _filteredWindowList = new ObservableCollection<AppWindowViewModel>(filterResults.Select(r => r.AppWindow));
             // 更新 程序列表
             lb.DataContext = _filteredWindowList;
+            // lb2.DataContext = _filteredWindowList;
             if (lb.Items.Count > 0)
             {
                 lb.SelectedItem = lb.Items[0];
+            }
+        }
+
+        void UpdateDevPrograms(WindowFilterContext<AppWindowViewModel> context)
+        {
+            var filterResults = new WindowFilterer().Filter(context, "423141234").ToList();
+            
+            List<string> apps =  new List<string> { "code", "webstorm", "visual", "github desktop", "terminal" };
+
+            foreach (string appName in apps)
+            {
+                var temp = new WindowFilterer().Filter(context, appName).ToList();
+                foreach (var temp1 in temp)
+                {
+                    filterResults.Add(temp1);
+                }
+            }
+            
+            foreach (var filterResult in filterResults)
+            {
+                filterResult.AppWindow.FormattedTitle =
+                    GetFormattedTitleFromBestResult(filterResult.WindowTitleMatchResults);
+                filterResult.AppWindow.FormattedProcessTitle =
+                    GetFormattedTitleFromBestResult(filterResult.ProcessTitleMatchResults);
+            }
+
+            _filteredWindowList2 = new ObservableCollection<AppWindowViewModel>(filterResults.Select(r => r.AppWindow));
+            // 更新 程序列表
+            lbdev.DataContext = _filteredWindowList2;
+            if (lbdev.Items.Count > 0)
+            {
+                lbdev.SelectedItem = lbdev.Items[0];
             }
         }
 
@@ -924,6 +966,22 @@ namespace Switcheroo
             if (!Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
             {
                 Switch();
+            }
+            e.Handled = true;
+        }
+        
+        private void ListBoxItem_MouseLBClickDev(object sender, MouseButtonEventArgs e)
+        {
+            if (!Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+            {
+                // Switch();
+                foreach (var item in lbdev.SelectedItems)
+                {
+                    var win = (AppWindowViewModel)item;
+                    win.AppWindow.SwitchToLastVisibleActivePopup();
+                }
+
+                HideWindow();
             }
             e.Handled = true;
         }
