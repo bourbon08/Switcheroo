@@ -43,6 +43,8 @@ using Application = System.Windows.Application;
 using MenuItem = System.Windows.Forms.MenuItem;
 using MessageBox = System.Windows.MessageBox;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace Switcheroo
 {
@@ -946,7 +948,25 @@ namespace Switcheroo
             if (lbdev.Items.Count > 0)
             {
                 lbdev.SelectedItem = lbdev.Items[0];
+                
+                var win = (AppWindowViewModel)lbdev.SelectedItems[0];
+
+                var b = win.AppWindow.Image;
+                MemoryStream ms = new MemoryStream();
+                b.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                byte[] bytes = ms.GetBuffer();  //byte[]   bytes=   ms.ToArray(); 这两句都可以
+                ms.Close();
+                //Convert it to BitmapImage
+                BitmapImage image = new BitmapImage();
+                image.BeginInit();
+                image.StreamSource = new MemoryStream(bytes);
+                image.EndInit();
+                im.Source = image;
+                // im.Loaded;
             }
+            
+            // 更新图像
+            
         }
 
         private static string GetFormattedTitleFromBestResult(IList<MatchResult> matchResults)
