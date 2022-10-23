@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using Switcheroo.Core.Matchers;
+using System.Windows.Media.Imaging;
 
 namespace Switcheroo.Core
 {

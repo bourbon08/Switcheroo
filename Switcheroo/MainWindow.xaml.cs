@@ -52,8 +52,9 @@ namespace Switcheroo
     {
         private WindowCloser _windowCloser;
         private List<AppWindowViewModel> _unfilteredWindowList;
-        private ObservableCollection<AppWindowViewModel> _filteredWindowList;
-        private ObservableCollection<AppWindowViewModel> _filteredWindowList2;
+        private ObservableCollection<AppWindowViewModel> _filteredWindowListAll;
+        private ObservableCollection<AppWindowViewModel> _filteredWindowListDev;
+        private ObservableCollection<AppWindowViewModel> _filteredWindowListBrowser;
         private NotifyIcon _notifyIcon;
         private HotKey _hotkey;
 
@@ -518,7 +519,7 @@ namespace Switcheroo
                 foregroundWindowMovedToBottom = true;
             }
 
-            _filteredWindowList = new ObservableCollection<AppWindowViewModel>(_unfilteredWindowList);
+            _filteredWindowListAll = new ObservableCollection<AppWindowViewModel>(_unfilteredWindowList);
             _windowCloser = new WindowCloser();
 
             for (var i = 0; i < _unfilteredWindowList.Count; i++)
@@ -546,7 +547,7 @@ namespace Switcheroo
             }
             else
             {
-                lb.DataContext = _filteredWindowList;
+                lb.DataContext = _filteredWindowListAll;
             }
 
             FocusItemInList(focus, foregroundWindowMovedToBottom);
@@ -854,6 +855,7 @@ namespace Switcheroo
 
             var filterResults = new WindowFilterer().Filter(context, "423141234").ToList();
             UpdateDevPrograms(context);
+            UpdateBrowserPrograms(context);
             
             if (this.processFilterText == "dev")
             {
@@ -909,9 +911,9 @@ namespace Switcheroo
                     GetFormattedTitleFromBestResult(filterResult.ProcessTitleMatchResults);
             }
 
-            _filteredWindowList = new ObservableCollection<AppWindowViewModel>(filterResults.Select(r => r.AppWindow));
+            _filteredWindowListAll = new ObservableCollection<AppWindowViewModel>(filterResults.Select(r => r.AppWindow));
             // 更新 程序列表
-            lb.DataContext = _filteredWindowList;
+            lb.DataContext = _filteredWindowListAll;
             // lb2.DataContext = _filteredWindowList;
             if (lb.Items.Count > 0)
             {
@@ -921,13 +923,13 @@ namespace Switcheroo
 
         void UpdateDevPrograms(WindowFilterContext<AppWindowViewModel> context)
         {
-            var filterResults = new WindowFilterer().Filter(context, "423141234").ToList();
+            var filterResults = new WindowFilterer().FilterByTitle(context, "423141234").ToList();
             
-            List<string> apps =  new List<string> { "code", "webstorm", "visual", "github desktop", "terminal" };
+            List<string> apps =  new List<string> { "code", "webstorm", "visual", "github desktop", "terminal", "rider" };
 
             foreach (string appName in apps)
             {
-                var temp = new WindowFilterer().Filter(context, appName).ToList();
+                var temp = new WindowFilterer().FilterByTitle(context, appName).ToList();
                 foreach (var temp1 in temp)
                 {
                     filterResults.Add(temp1);
@@ -940,33 +942,79 @@ namespace Switcheroo
                     GetFormattedTitleFromBestResult(filterResult.WindowTitleMatchResults);
                 filterResult.AppWindow.FormattedProcessTitle =
                     GetFormattedTitleFromBestResult(filterResult.ProcessTitleMatchResults);
-            }
-
-            _filteredWindowList2 = new ObservableCollection<AppWindowViewModel>(filterResults.Select(r => r.AppWindow));
-            // 更新 程序列表
-            lbdev.DataContext = _filteredWindowList2;
-            if (lbdev.Items.Count > 0)
-            {
-                lbdev.SelectedItem = lbdev.Items[0];
                 
-                var win = (AppWindowViewModel)lbdev.SelectedItems[0];
+                // 处理每个应用的图片 暂时不用吧 不要删掉
+                // var b = filterResult.AppWindow.AppWindow.Image;
+                // MemoryStream ms = new MemoryStream();
+                // b.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                // byte[] bytes = ms.GetBuffer();  //byte[]   bytes=   ms.ToArray(); 这两句都可以
+                // ms.Close();
+                // //Convert it to BitmapImage
+                // BitmapImage image = new BitmapImage();
+                // image.BeginInit();
+                // image.StreamSource = new MemoryStream(bytes);
+                // image.EndInit();
+                // // im.Source = image;
+                //
+                // filterResult.AppWindow.ProgramImage = image;
+            }
 
-                var b = win.AppWindow.Image;
-                MemoryStream ms = new MemoryStream();
-                b.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-                byte[] bytes = ms.GetBuffer();  //byte[]   bytes=   ms.ToArray(); 这两句都可以
-                ms.Close();
-                //Convert it to BitmapImage
-                BitmapImage image = new BitmapImage();
-                image.BeginInit();
-                image.StreamSource = new MemoryStream(bytes);
-                image.EndInit();
-                im.Source = image;
-                // im.Loaded;
+            _filteredWindowListDev = new ObservableCollection<AppWindowViewModel>(filterResults.Select(r => r.AppWindow));
+            // 更新 程序列表
+            lbdev.DataContext = _filteredWindowListDev;
+            // if (lbdev.Items.Count > 0)
+            // {
+            //     lbdev.SelectedItem = lbdev.Items[0];
+            // }
+
+        }
+        
+        void UpdateBrowserPrograms(WindowFilterContext<AppWindowViewModel> context)
+        {
+            var filterResults = new WindowFilterer().FilterByTitle(context, "423141234").ToList();
+            
+            List<string> apps =  new List<string> { "edge", "chrome", "anki", "ticktick", "siyuan" };
+
+            foreach (string appName in apps)
+            {
+                var temp = new WindowFilterer().FilterByTitle(context, appName).ToList();
+                foreach (var temp1 in temp)
+                {
+                    filterResults.Add(temp1);
+                }
             }
             
-            // 更新图像
-            
+            foreach (var filterResult in filterResults)
+            {
+                filterResult.AppWindow.FormattedTitle =
+                    GetFormattedTitleFromBestResult(filterResult.WindowTitleMatchResults);
+                filterResult.AppWindow.FormattedProcessTitle =
+                    GetFormattedTitleFromBestResult(filterResult.ProcessTitleMatchResults);
+                
+                // 处理每个应用的图片 暂时不用吧 不要删掉
+                // var b = filterResult.AppWindow.AppWindow.Image;
+                // MemoryStream ms = new MemoryStream();
+                // b.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                // byte[] bytes = ms.GetBuffer();  //byte[]   bytes=   ms.ToArray(); 这两句都可以
+                // ms.Close();
+                // //Convert it to BitmapImage
+                // BitmapImage image = new BitmapImage();
+                // image.BeginInit();
+                // image.StreamSource = new MemoryStream(bytes);
+                // image.EndInit();
+                // // im.Source = image;
+                //
+                // filterResult.AppWindow.ProgramImage = image;
+            }
+
+            _filteredWindowListBrowser = new ObservableCollection<AppWindowViewModel>(filterResults.Select(r => r.AppWindow));
+            // 更新 程序列表
+            LBBrowser.DataContext = _filteredWindowListBrowser;
+            // if (LBBrowser.Items.Count > 0)
+            // {
+            //     LBBrowser.SelectedItem = LBBrowser.Items[0];
+            // }
+
         }
 
         private static string GetFormattedTitleFromBestResult(IList<MatchResult> matchResults)
@@ -996,6 +1044,21 @@ namespace Switcheroo
             {
                 // Switch();
                 foreach (var item in lbdev.SelectedItems)
+                {
+                    var win = (AppWindowViewModel)item;
+                    win.AppWindow.SwitchToLastVisibleActivePopup();
+                }
+
+                HideWindow();
+            }
+            e.Handled = true;
+        }
+        private void ListBoxItem_MouseLBClickBrowser(object sender, MouseButtonEventArgs e)
+        {
+            if (!Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+            {
+                // Switch();
+                foreach (var item in LBBrowser.SelectedItems)
                 {
                     var win = (AppWindowViewModel)item;
                     win.AppWindow.SwitchToLastVisibleActivePopup();
@@ -1054,13 +1117,13 @@ namespace Switcheroo
 
         private void RemoveWindow(AppWindowViewModel window)
         {
-            int index = _filteredWindowList.IndexOf(window);
+            int index = _filteredWindowListAll.IndexOf(window);
             if (index < 0)
                 return;
 
             if (lb.SelectedIndex == index)
             {
-                if (_filteredWindowList.Count > index + 1)
+                if (_filteredWindowListAll.Count > index + 1)
                     lb.SelectedIndex++;
                 else
                 {
@@ -1069,7 +1132,7 @@ namespace Switcheroo
                 }
             }
 
-            _filteredWindowList.Remove(window);
+            _filteredWindowListAll.Remove(window);
             _unfilteredWindowList.Remove(window);
         }
 

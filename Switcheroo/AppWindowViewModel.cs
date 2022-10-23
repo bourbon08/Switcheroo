@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Switcheroo.Core;
+using System.Windows.Media.Imaging;
 
 namespace Switcheroo
 {
@@ -40,6 +41,8 @@ namespace Switcheroo
         }
 
         private string _formattedTitle;
+        // 应用的的图片
+        public BitmapImage ProgramImage { get; set; }
 
         public string FormattedTitle
         {

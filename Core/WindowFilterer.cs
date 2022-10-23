@@ -72,6 +72,54 @@ namespace Switcheroo.Core
                             ProcessTitleMatchResults = r.ResultsProcessTitle
                         });
         }
+        public IEnumerable<FilterResult<T>> FilterByTitle<T>(WindowFilterContext<T> context, string query) where T : IWindowText
+        {
+            var filterText = query;
+            string processFilterText = null;
+
+            var queryParts = query.Split(new [] {'.'}, 2);
+
+            if (queryParts.Length == 2)
+            {
+                processFilterText = queryParts[0].Trim();
+                if (processFilterText.Length == 0)
+                {
+                    processFilterText = context.ForegroundWindowProcessTitle.Trim();
+                }
+
+                filterText = queryParts[1].Trim();
+            }
+            
+
+            return context.Windows
+                .Select(
+                    w =>
+                        new
+                        {
+                            Window = w,
+                            ResultsTitle = Score(w.WindowTitle, filterText),
+                            ResultsProcessTitle = Score(w.ProcessTitle, processFilterText ?? filterText)
+                        })
+                .Where(r =>
+                {
+                    if (processFilterText == null)
+                    {
+                        // 只过滤进程名, 标题不管
+                        // return r.ResultsTitle.Any(wt => wt.Matched) || r.ResultsProcessTitle.Any(pt => pt.Matched);
+                        return r.ResultsProcessTitle.Any(pt => pt.Matched);
+                    }
+                    return r.ResultsTitle.Any(wt => wt.Matched) && r.ResultsProcessTitle.Any(pt => pt.Matched);
+                })
+                .OrderByDescending(r => r.ResultsTitle.Sum(wt => wt.Score) + r.ResultsProcessTitle.Sum(pt => pt.Score))
+                .Select(
+                    r =>
+                        new FilterResult<T>
+                        {
+                            AppWindow = r.Window,
+                            WindowTitleMatchResults = r.ResultsTitle,
+                            ProcessTitleMatchResults = r.ResultsProcessTitle
+                        });
+        }
 
         private static List<MatchResult> Score(string title, string filterText)
         {
